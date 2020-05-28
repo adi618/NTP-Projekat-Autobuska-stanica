@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "Structs.h"
-
+//nestooo
 struct Road
 {
 	std::string location1, location2;
