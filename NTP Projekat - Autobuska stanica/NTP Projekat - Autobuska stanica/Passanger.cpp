@@ -3,7 +3,7 @@
 
 #include "Structs.h"
 
-void driver()
+void passanger()
 {
 	// ucitaj datume
 

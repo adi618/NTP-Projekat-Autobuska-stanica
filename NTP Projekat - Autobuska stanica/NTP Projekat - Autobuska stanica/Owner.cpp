@@ -3,10 +3,15 @@
 
 #include "Structs.h"
 
-void driver()
+void owner()
 {
 	// login
+	// ja sam mislio da se vlasnik log inuje samo pomocu passworda, buduci da ima samo jedan vlasnik
+	// password vlasnika isto nek bude enkriptiran, kasnije mozemo napravit funkciju za enkriptiranje
+	// i taj enkriptirani broj/string nek bude u nekom txt fileu
 
+
+	// ustvari upravo sam skonto da tebi za vlasnika opste ne trebaju ove funkcije za ucitavanja....lol
 
 	int option;
 	int index;
@@ -19,9 +24,9 @@ void driver()
 
 		std::cout << "\n\n\tChoose an option:"
 			<< "\n\t\t1 - registruj vozaca"
-			<< "\n\t\t2 - ispisi sve informacije"
-			<< "\n\t\t3 - "
-			<< "\n\t\t4 - "
+			<< "\n\t\t2 - otpusti vozaca"
+			<< "\n\t\t3 - ispisi sve informacije vozaca"
+			<< "\n\t\t4 - ispisi sve informacije autobusa"
 			<< "\n\n\t\tOption: ";
 
 		std::cin >> option;
