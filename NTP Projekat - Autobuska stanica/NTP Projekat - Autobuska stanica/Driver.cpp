@@ -78,10 +78,8 @@ void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& ve
 	}
 }
 
-std::map <std::string, std::map <std::string, std::pair<float, float>>> loadMap(std::ifstream& file)
+void loadMap(std::ifstream& file, std::map <std::string, std::map <std::string, std::pair<float, float>>>& adjMatrix)
 {
-	std::map <std::string, std::map <std::string, std::pair <float, float>>> adjMatrix;
-
 	std::string location1, location2;
 	float time;
 	float fuel;
@@ -98,15 +96,15 @@ std::map <std::string, std::map <std::string, std::pair<float, float>>> loadMap(
 				adjMatrix[location1][location2] = std::make_pair(time, fuel);
 		}
 	}
-
-	return adjMatrix;
 }
 
-bool loginConfirmation(std::string name, std::string lastname, int ID, int password, std::vector <Driver> loginInfo)
+bool loginConfirmation(std::string name, std::string lastname, int password, const std::vector <std::pair<LocalBus, Driver>>& loginInfo)
 {
-	for (const Driver& driver : loginInfo)
+	for (const std::pair<LocalBus, Driver>& driver : loginInfo)
 	{
-		if (name == driver.name and lastname == driver.lastname and password == driver.encryptedPassword)
+		if (name == driver.second.name and 
+			lastname == driver.second.lastname and 
+			password == driver.second.encryptedPassword)
 		{
 			return true;
 		}
@@ -125,7 +123,6 @@ void driver()
 		pause();
 		return;
 	}
-
 
 	std::vector <Driver> loginInfo;
 	std::string name;
@@ -152,9 +149,8 @@ void driver()
 	while (true)
 	{
 		system("cls");
-		std::cout << "\n\n\t    ";
-
-		std::cout << "\n\n\tChoose an option:"
+		std::cout << "\n\n\t    "
+			<< "\n\n\tChoose an option:"
 			<< "\n\t\t1 - mapa i autobusi txt za dijkstrin algoritam"
 			<< "\n\t\t2 - ode na lokaciju // oduzet ce gorivo"
 			<< "\n\t\t3 - provjera goriva"

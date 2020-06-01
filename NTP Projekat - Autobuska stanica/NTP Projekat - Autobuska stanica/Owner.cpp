@@ -14,19 +14,22 @@ void loadDriver(std::vector <Driver>& vec)
 	{
 		std::cout << "";
 	}
-};
+}
+
 void deleteDriver(std::vector <Driver>& vec)
 {
 
-};
+}
+
 void printDrivers(const std::vector <Driver>& vec)
 {
 
-};
+}
+
 void printBusses(const std::vector <LocalBus>& vec)
 {
 
-};
+}
 
 void owner()
 {
@@ -104,7 +107,6 @@ void owner()
 		}
 		else
 		{
-
 			std::cout << "\n\t\tPogresan unos!";
 		}
 
