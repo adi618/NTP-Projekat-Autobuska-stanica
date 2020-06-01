@@ -3,6 +3,30 @@
 
 #include "Structs.h"
 
+<<<<<<< Updated upstream
+=======
+void loadDriver(std::vector <Drivers>& vec)
+{
+
+	while (true)
+	{
+		std::cout << "";
+	}
+};
+void deleteDriver(std::vector <Drivers>& vec)
+{
+
+};
+void printDrivers(std::vector <Drivers>& vec)
+{
+
+};
+void printBusses(std::vector <Busses>& vec) // jel ima vektor za sve buseve ili su odvojeno local i longDistance?
+{
+
+};
+
+>>>>>>> Stashed changes
 void owner()
 {
 	// login
