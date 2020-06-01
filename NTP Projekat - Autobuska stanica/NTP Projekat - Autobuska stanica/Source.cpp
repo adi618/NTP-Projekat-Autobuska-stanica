@@ -6,7 +6,6 @@ void pause()
 {
 	std::cout << "\n\n\t";
 	system("pause");
-	std::cout << "\n\n\n";
 }
 
 

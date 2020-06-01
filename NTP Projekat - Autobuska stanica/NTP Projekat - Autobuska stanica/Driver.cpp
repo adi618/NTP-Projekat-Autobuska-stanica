@@ -20,11 +20,16 @@ void loadDrivers(std::ifstream& file, std::vector <Drivers>& vec)
 
 }
 
+<<<<<<< Updated upstream
 void loadBuses(std::ifstream& file, std::vector <LocalBus>& vec)
+=======
+void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec)
+>>>>>>> Stashed changes
 {
 	bool longDistance;
 
 	// temp values:
+		// for bus
 	int ID;
 	std::string driverName;
 	std::string driverSurname;
@@ -34,8 +39,10 @@ void loadBuses(std::ifstream& file, std::vector <LocalBus>& vec)
 	int totalSeats;
 	int takenSeats;
 	std::string location;
-	std::string assistantDriver;
-	int spareTires;
+		// for driver
+	std::string name;
+	std::string lastname;
+	int password;
 
 	while (file >> longDistance)
 	{
@@ -49,15 +56,34 @@ void loadBuses(std::ifstream& file, std::vector <LocalBus>& vec)
 		file >> takenSeats;
 		file >> location;
 
+		file >> name;
+		file >> lastname;
+		file >> password;
+
+
 		if (longDistance)
 		{
+			std::string assistantDriver;
+			int spareTires;
 			file >> assistantDriver;
 			file >> spareTires;
+<<<<<<< Updated upstream
 			vec.push_back(LongDistanceBus(ID, driverName, driverSurname, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires));
 		}
 		else
 		{
 			vec.push_back(LocalBus(ID, driverName, driverSurname, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location));
+=======
+			LongDistanceBus bus(ID, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
+			Driver driver(name, lastname, password);
+			vec.push_back(std::make_pair(bus, driver));
+		}
+		else
+		{			
+			LocalBus bus(ID, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
+			Driver driver(name, lastname, password);
+			vec.push_back(std::make_pair(bus, driver));
+>>>>>>> Stashed changes
 		}
 	}
 }
@@ -86,6 +112,21 @@ std::map <std::string, std::map <std::string, std::pair<float, float>>> loadMap(
 	return adjMatrix;
 }
 
+<<<<<<< Updated upstream
+=======
+bool loginConfirmation(std::string name, std::string lastname, int ID, int password, std::vector <Driver> loginInfo)
+{
+	for (const Driver& driver : loginInfo)
+	{
+		if (name == driver.name and lastname == driver.lastname and password == driver.encryptedPassword)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+>>>>>>> Stashed changes
 
 void driver()
 {
@@ -98,8 +139,17 @@ void driver()
 		return;
 	}
 
+<<<<<<< Updated upstream
 	std::vector <Drivers> loginInfo;
 	loadDrivers(driversFile, loginInfo);
+=======
+	std::vector <Driver> loginInfo;
+	std::string name;
+	std::string lastname;
+	int ID;
+	int busID;
+	int password;
+>>>>>>> Stashed changes
 
 	std::cout << "\n\n\tMolimo unesite ime: ";
 
@@ -108,7 +158,7 @@ void driver()
 	std::vector <Road> map;
 
 	// iz mapa.txt upis u road
-	std::map <std::string, std::map <std::string, int>> adjMatrix;
+	//std::map <std::string, std::map <std::string, std::pair<float, float>>> adjMatrix = loadMap(file);
 	// ucitaj upis iz autobusa
 	// ucitaj datume
 
