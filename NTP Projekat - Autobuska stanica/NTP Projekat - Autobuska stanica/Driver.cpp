@@ -15,16 +15,13 @@ struct Road
 
 void pause();
 
-void loadDrivers(std::ifstream& file, std::vector <Drivers>& vec)
+void loadDrivers(std::ifstream& file, std::vector <Driver>& vec)
 {
 
 }
 
-<<<<<<< Updated upstream
-void loadBuses(std::ifstream& file, std::vector <LocalBus>& vec)
-=======
+
 void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec)
->>>>>>> Stashed changes
 {
 	bool longDistance;
 
@@ -67,13 +64,7 @@ void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& ve
 			int spareTires;
 			file >> assistantDriver;
 			file >> spareTires;
-<<<<<<< Updated upstream
-			vec.push_back(LongDistanceBus(ID, driverName, driverSurname, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires));
-		}
-		else
-		{
-			vec.push_back(LocalBus(ID, driverName, driverSurname, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location));
-=======
+
 			LongDistanceBus bus(ID, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
 			Driver driver(name, lastname, password);
 			vec.push_back(std::make_pair(bus, driver));
@@ -83,7 +74,6 @@ void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& ve
 			LocalBus bus(ID, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
 			Driver driver(name, lastname, password);
 			vec.push_back(std::make_pair(bus, driver));
->>>>>>> Stashed changes
 		}
 	}
 }
@@ -112,8 +102,6 @@ std::map <std::string, std::map <std::string, std::pair<float, float>>> loadMap(
 	return adjMatrix;
 }
 
-<<<<<<< Updated upstream
-=======
 bool loginConfirmation(std::string name, std::string lastname, int ID, int password, std::vector <Driver> loginInfo)
 {
 	for (const Driver& driver : loginInfo)
@@ -126,7 +114,6 @@ bool loginConfirmation(std::string name, std::string lastname, int ID, int passw
 	return false;
 }
 
->>>>>>> Stashed changes
 
 void driver()
 {
@@ -139,17 +126,13 @@ void driver()
 		return;
 	}
 
-<<<<<<< Updated upstream
-	std::vector <Drivers> loginInfo;
-	loadDrivers(driversFile, loginInfo);
-=======
+
 	std::vector <Driver> loginInfo;
 	std::string name;
 	std::string lastname;
 	int ID;
 	int busID;
 	int password;
->>>>>>> Stashed changes
 
 	std::cout << "\n\n\tMolimo unesite ime: ";
 
