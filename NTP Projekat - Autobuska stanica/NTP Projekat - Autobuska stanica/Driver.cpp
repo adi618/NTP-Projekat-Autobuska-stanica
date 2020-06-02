@@ -11,41 +11,34 @@ struct Road
 	std::string location1, location2;
 	float time;
 	float fuel;
+
+	Road(std::string location1, std::string location2, float time, float fuel)
+		: location1(location1), location2(location2), time(time), fuel(fuel) {}
 };
 
 void pause();
-
-void loadDrivers(std::ifstream& file, std::vector <Driver>& vec)
-{
-
-}
-
 
 void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec)
 {
 	bool longDistance;
 
 	// temp values:
-		// for bus
+	// for bus
 	int ID;
-	std::string driverName;
-	std::string driverSurname;
 	std::string model;
 	float fuelPer100KM;
 	float fuelPercentage;
 	int totalSeats;
 	int takenSeats;
 	std::string location;
-		// for driver
+	// for driver
 	std::string name;
 	std::string lastname;
-	int password;
+	unsigned long long password;
 
 	while (file >> longDistance)
 	{
 		file >> ID;
-		file >> driverName;
-		file >> driverSurname;
 		file >> model;
 		file >> fuelPer100KM;
 		file >> fuelPercentage;
@@ -70,7 +63,7 @@ void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& ve
 			vec.push_back(std::make_pair(bus, driver));
 		}
 		else
-		{			
+		{
 			LocalBus bus(ID, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
 			Driver driver(name, lastname, password);
 			vec.push_back(std::make_pair(bus, driver));
@@ -90,7 +83,7 @@ void loadMap(std::ifstream& file, std::map <std::string, std::map <std::string, 
 		file >> time;
 		file >> fuel;
 
-		if (time >= 0 or fuel >= 0)
+		if (time > 0 or fuel > 0)
 		{
 			if (time > adjMatrix[location1][location2].first)
 				adjMatrix[location1][location2] = std::make_pair(time, fuel);
@@ -98,49 +91,148 @@ void loadMap(std::ifstream& file, std::map <std::string, std::map <std::string, 
 	}
 }
 
-bool loginConfirmation(std::string name, std::string lastname, int password, const std::vector <std::pair<LocalBus, Driver>>& loginInfo)
+std::pair <bool, int> loginConfirmation
+(std::string name, std::string lastname, unsigned long long password, const std::vector <std::pair<LocalBus, Driver>>& loginInfo)
 {
-	for (const std::pair<LocalBus, Driver>& driver : loginInfo)
+	for (int i = 0; i < loginInfo.size(); i++)
 	{
-		if (name == driver.second.name and 
-			lastname == driver.second.lastname and 
-			password == driver.second.encryptedPassword)
+		if (name == loginInfo[i].second.name and
+			lastname == loginInfo[i].second.lastname and
+			password == loginInfo[i].second.encryptedPassword)
 		{
-			return true;
+			return std::make_pair(true, i);
 		}
 	}
-	return false;
+	return std::make_pair(false, -1);
+}
+
+std::ostream& operator<<(std::ostream& stream, std::map <std::string, std::map <std::string, std::pair<float, float>>> map)
+{
+	for (const std::pair<std::string, std::map <std::string, std::pair<float, float>>>& i : map)
+	{
+		for (const std::pair <std::string, std::pair<float, float>>& j : i.second)
+		{
+			stream << "\n\tOd " << i.first << " do " << j.first
+				<< "\n\tPotrebno vrijeme: " << j.second.first << ", potrebni postotak goriva: " << j.second.second;
+		}
+	}
+	return stream;
+}
+
+unsigned long long encryptPassword(std::string password, int i = 0)
+{
+	if (i >= password.size())
+		return -1;
+
+	return (password[i] * 98257 + 67867967) % 1000000007 + encryptPassword(password, i + 1);
+}
+
+std::map <std::string, float> dijkstra(std::string source, std::map <std::string, std::map <std::string, std::pair<float, float>>>& adjMatrix)
+{
+	float MAX = std::numeric_limits <float>::max();
+	std::map <std::string, float> dist;
+	std::map <std::string, bool> visited;
+	for (const std::pair<std::string, std::map <std::string, std::pair<float, float>>>& it : adjMatrix)
+	{
+		dist[it.first] = MAX;
+		visited[it.first] = false;
+	}
+
+	dist[source] = 0;
+
+	for (int i = 0; i < adjMatrix.size() - 1; i++)
+	{
+		float min = MAX;
+		std::string minIndex;
+
+		for (const std::pair<std::string, std::map <std::string, std::pair<float, float>>>& v : adjMatrix)
+		{
+			if (visited[v.first] == false && dist[v.first] <= min)
+			{
+				min = dist[v.first];
+				minIndex = v.first;
+			}
+		}
+		std::string u = minIndex;
+
+		visited[u] = true;
+
+		for (const std::pair<std::string, std::map <std::string, std::pair<float, float>>>& v : adjMatrix)
+		{
+			if (!visited[v.first] and adjMatrix[u][v.first].first >= 0 and
+				dist[u] != MAX and
+				dist[u] + adjMatrix[u][v.first].first < dist[v.first])
+			{
+				dist[v.first] = dist[u] + adjMatrix[u][v.first].first;
+			}
+		}
+	}
+
+	return dist;
 }
 
 
 void driver()
 {
-	std::ifstream driversFile("vozaci.txt");
+	std::ifstream infoFile("info.txt");
+	std::ifstream mapFile("mapa.txt");
 
-	if (!driversFile.is_open())
+	if (!infoFile.is_open())
 	{
 		std::cout << "\n\n\tNema registrovanih vozaca!";
 		pause();
 		return;
 	}
 
-	std::vector <Driver> loginInfo;
+	if (!mapFile.is_open())
+	{
+		std::cout << "\n\n\tMapa nije pronadjena!";
+		pause();
+		return;
+	}
+
+	std::vector <std::pair<LocalBus, Driver>> loginInfo;
+	std::pair<LocalBus, Driver> driver;
+	loadInfo(infoFile, loginInfo);
 	std::string name;
 	std::string lastname;
-	int ID;
-	int busID;
-	int password;
+	std::string password;
+	int numberOfTries = 3;
+	std::pair <bool, int> loginRezult;
 
-	std::cout << "\n\n\tMolimo unesite ime: ";
+	while (true)
+	{
+		std::cout << "\n\n\tMolimo unesite ime: ";
+		std::cin >> name;
 
-	// login
+		std::cout << "\n\n\tMolimo unesite prezime: ";
+		std::cin >> lastname;
 
-	std::vector <Road> map;
+		std::cout << "\n\n\tMolimo unesite lozinku: ";
+		std::cin >> password;
 
-	// iz mapa.txt upis u road
-	//std::map <std::string, std::map <std::string, std::pair<float, float>>> adjMatrix = loadMap(file);
-	// ucitaj upis iz autobusa
-	// ucitaj datume
+		numberOfTries--;
+
+		unsigned long long encryptedPassword = encryptPassword(password);
+		loginRezult = loginConfirmation(name, lastname, encryptedPassword, loginInfo);
+		if (loginRezult.first)
+		{
+			std::cout << "\n\tPrijava uspjesna.\n\tDobro dosli!";
+			driver = loginInfo[loginRezult.second];
+			break;
+		}
+		else if (numberOfTries > 0)
+		{
+			std::cout << "\n\tPogresan unos!\n\tPreostalo pokusaja: " << numberOfTries;
+		}
+		else
+		{
+			pause();
+		}
+	}
+
+	std::map <std::string, std::map <std::string, std::pair<float, float>>> map;
+	loadMap(mapFile, map);
 
 	int option;
 	int index;
@@ -149,19 +241,21 @@ void driver()
 	while (true)
 	{
 		system("cls");
-		std::cout << "\n\n\t    "
+		std::cout << "\n\n\tDobrodosli " << name
 			<< "\n\n\tChoose an option:"
-			<< "\n\t\t1 - mapa i autobusi txt za dijkstrin algoritam"
-			<< "\n\t\t2 - ode na lokaciju // oduzet ce gorivo"
-			<< "\n\t\t3 - provjera goriva"
-			<< "\n\t\t4 - ispisi redovne voznje"
+			<< "\n\t\t1 - Ispis mape"
+			<< "\n\t\t2 - Odlazak na lokaciju"
+			<< "\n\t\t3 - Ispis vremenski najkraceg puta do svake ucitane lokacije"
+			<< "\n\t\t4 - "
+			<< "\n\t\t5 - Ispis redovnih voznji"
+			<< "\n\t\t10 - Izlaz"
 			<< "\n\n\t\tOption: ";
 
 		std::cin >> option;
 
 		if (option == 1)
 		{
-
+			std::cout << map;
 		}
 		else if (option == 2)
 		{
@@ -169,10 +263,20 @@ void driver()
 		}
 		else if (option == 3)
 		{
-
+			std::map <std::string, float> times = dijkstra(driver.first.getLocation(), map);
+			for (const std::pair <std::string, float>& t : times)
+			{
+				std::cout << "\n\t\t" << t.first << ": ";
+				if (t.second > 0)
+					std::cout << t.second << "minuta";
+				else
+					std::cout << "Nema dostupne putanje";
+			}
 		}
 		else if (option == 10)
+		{
 			return;
+		}
 		else
 		{
 			std::cout << "\n\t\tInvalid option!";
