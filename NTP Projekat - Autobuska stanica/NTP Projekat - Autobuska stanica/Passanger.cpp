@@ -16,12 +16,12 @@ void passanger()
 		system("cls");
 		std::cout << "\n\n\t    ";
 
-		std::cout << "\n\n\tChoose an option:"
-			<< "\n\t\t1 - ispisi redovne voznje"
-			<< "\n\t\t2 - Kupi kartu"
-			<< "\n\t\t3 - Isprintaj kartu"
+		std::cout << "\n\n\tDobrodosli!\n\tOdaberite opciju:"
+			<< "\n\t\t1 - Ispis redovnih voznji"
+			<< "\n\t\t2 - Kupovina nove karte"
+			<< "\n\t\t3 - Printanje kupljene karte"
 			<< "\n\t\t4 - "
-			<< "\n\n\t\tOption: ";
+			<< "\n\n\t\tOdabir: ";
 
 		std::cin >> option;
 
