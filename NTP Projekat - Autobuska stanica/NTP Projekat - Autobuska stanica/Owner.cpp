@@ -7,7 +7,7 @@
 void pause();
 
 unsigned long long encryptPassword(std::string password, unsigned i = 0);
-void loadDriverKeyboard(std::vector <std::pair<LocalBus, Driver>>& vec)
+void loadDriverKeyboard(std::vector <std::pair<LocalBus*, Driver*>>& vec)
 {
 	bool longDistance;
 	// temp values:
@@ -55,19 +55,20 @@ void loadDriverKeyboard(std::vector <std::pair<LocalBus, Driver>>& vec)
 		std::cout << "\n\tUnesite broj rezervnih guma: ";
 		std::cin >> spareTires;
 
-		LongDistanceBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
-		Driver driver(name, lastname, encryptPassword(password));
+		LongDistanceBus* bus = new LongDistanceBus
+		(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
+		Driver* driver = new Driver(name, lastname, encryptPassword(password));
 		vec.push_back(std::make_pair(bus, driver));
 	}
 	else
 	{
-		LocalBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
-		Driver driver(name, lastname, encryptPassword(password));
+		LocalBus* bus = new LocalBus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
+		Driver* driver = new Driver(name, lastname, encryptPassword(password));
 		vec.push_back(std::make_pair(bus, driver));
 	}
 }
 
-void deleteDriver(std::vector <std::pair<LocalBus, Driver>>& vec)
+void deleteDriver(std::vector <std::pair<LocalBus*, Driver*>>& vec)
 {
 	int ID;
 	bool validID = false;
@@ -77,17 +78,17 @@ void deleteDriver(std::vector <std::pair<LocalBus, Driver>>& vec)
 	std::cin >> ID;
 	for (size_t i = 0; i < vec.size(); i++)
 	{
-		if (ID == vec[i].first.getID())
+		if (ID == vec[i].first->getID())
 		{
 			validID = true;
 			std::cout << "\n\n\tIme i prezime vozaca kojeg cete otpustiti: ";
-			std::cout << vec[i].second.name << " " << vec[i].second.lastname;
+			std::cout << vec[i].second->name << " " << vec[i].second->lastname;
 			std::cout << "\n\n\tUnesite ime vozaca kojeg cete zaposliti na njegovo mjesto: ";
 			std::cin >> newDriversName;
 			std::cout << "\n\n\tUnesite prezime vozaca kojeg cete zaposliti na njegovo mjesto: ";
 			std::cin >> newDriversLastname;
-			vec[i].second.name = newDriversName;
-			vec[i].second.lastname = newDriversLastname;
+			vec[i].second->name = newDriversName;
+			vec[i].second->lastname = newDriversLastname;
 			break;
 		}
 	}
@@ -101,37 +102,64 @@ void deleteDriver(std::vector <std::pair<LocalBus, Driver>>& vec)
 	}
 }
 
-void printDrivers(std::vector <std::pair<LocalBus, Driver>>& vec)
+void printDrivers(std::vector <std::pair<LocalBus*, Driver*>>& vec)
 {
 	for (std::size_t i = 0; i < vec.size(); i++)
 	{
-		std::cout << "\n\n\tID broj: " << vec[i].first.getID();
-		std::cout << "\n\tIme vozaca: " << vec[i].second.name;
-		std::cout << "\n\tPrezime vozaca: " << vec[i].second.lastname;
+		std::cout << "\n\n\tID broj: " << vec[i].first->getID();
+		std::cout << "\n\tIme vozaca: " << vec[i].second->name;
+		std::cout << "\n\tPrezime vozaca: " << vec[i].second->lastname;
 	}
 }
 
-void printBusses(std::vector <std::pair<LocalBus, Driver>>& vec)
+void printBusses(std::vector <std::pair<LocalBus*, Driver*>>& vec)
 {
 	for (std::size_t i = 0; i < vec.size(); i++)
 	{
-		std::cout << "\n\n\tID broj: " << vec[i].first.getID();
-		std::cout << "\n\tPotrosnja goriva(l/100km): " << vec[i].first.getFuelPer100KM();
-		std::cout << "\n\tProcentualna kolicina goriva: " << vec[i].first.getFuelPercentage();
-		std::cout << "\n\tUkupan broj sjedista: " << vec[i].first.getTotalSeats();
-		std::cout << "\n\tUkupan broj zauzetih sjedista: " << vec[i].first.getTakenSeats();
-		std::cout << "\n\tLokacija autobusa: " << vec[i].first.getLocation();
+		std::cout << "\n\n\tID broj: " << vec[i].first->getID();
+		std::cout << "\n\tPotrosnja goriva(l/100km): " << vec[i].first->getFuelPer100KM();
+		std::cout << "\n\tProcentualna kolicina goriva: " << vec[i].first->getFuelPercentage();
+		std::cout << "\n\tUkupan broj sjedista: " << vec[i].first->getTotalSeats();
+		std::cout << "\n\tUkupan broj zauzetih sjedista: " << vec[i].first->getTakenSeats();
+		std::cout << "\n\tLokacija autobusa: " << vec[i].first->getLocation();
 
-		if (!vec[i].first.isLocal())
+		if (!vec[i].first->isLocal())
 		{
-			std::cout << "\n\tIme pomocnog vozaca: " << vec[i].first.getAssistantDriver();
-			std::cout << "\n\tBroj rezervnih guma: " << vec[i].first.getSpareTires();
+			std::cout << "\n\tIme pomocnog vozaca: " << vec[i].first->getAssistantDriver();
+			std::cout << "\n\tBroj rezervnih guma: " << vec[i].first->getSpareTires();
 		}
 	}
 }
 
-void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec);
+void saveLoginInfo(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo)
+{
+	std::ofstream finalFile("info.txt");
+	for (std::size_t i = 0; i < loginInfo.size(); i++)
+	{
+		if (loginInfo[i].first->isLocal())
+		{
+			finalFile << 0 << " ";
+		}
+		else
+		{
+			finalFile << 1 << " ";
+		}
 
+		finalFile << loginInfo[i].first->getID() << " " << loginInfo[i].first->getFuelPer100KM() << " " << loginInfo[i].first->getFuelPercentage()
+			<< " " << loginInfo[i].first->getTotalSeats() << " " << loginInfo[i].first->getTakenSeats() << " " << loginInfo[i].first->getLocation()
+			<< " " << loginInfo[i].second->name << " " << loginInfo[i].second->lastname << " " << loginInfo[i].second->encryptedPassword;
+
+		if (!loginInfo[i].first->isLocal())
+		{
+			finalFile << loginInfo[i].first->getAssistantDriver() << loginInfo[i].first->getSpareTires();
+		}
+
+		finalFile << "\n";
+	}
+	finalFile.close();
+}
+
+void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus*, Driver*>>& vec);
 
 void owner()
 {
@@ -149,8 +177,7 @@ void owner()
 		pause();
 	}
 
-	std::vector <std::pair<LocalBus, Driver>> loginInfo;
-	std::pair<LocalBus, Driver> driverInfo;
+	std::vector <std::pair<LocalBus*, Driver*>> loginInfo;
 	loadInfo(infoFile, loginInfo);
 	infoFile.close();
 
@@ -187,7 +214,7 @@ void owner()
 		else
 		{
 			std::cout << "\n\tPogresan unos!\n\tNemate preostalih pokusaja, nalog je trenutno blokiran zbog sigurnosti vlasnika.";
-			return;
+			exit(0);
 		}
 	}
 
@@ -236,27 +263,5 @@ void owner()
 		system("pause");
 	}
 
-	std::ofstream finalFile("info.txt");
-	for (std::size_t i = 0; i < loginInfo.size(); i++)
-	{
-		if (loginInfo[i].first.isLocal())
-		{
-			finalFile << 0 << " ";
-		}
-		else
-		{
-			finalFile << 1 << " ";
-		}
-
-		finalFile << loginInfo[i].first.getID() << " " << loginInfo[i].first.getFuelPer100KM() << " " << loginInfo[i].first.getFuelPercentage()
-			<< " " << loginInfo[i].first.getTotalSeats() << " " << loginInfo[i].first.getTakenSeats() << " " << loginInfo[i].first.getLocation()
-			<< " " << loginInfo[i].second.name << " " << loginInfo[i].second.lastname<< " "<< loginInfo[i].second.encryptedPassword;
-
-		if (!loginInfo[i].first.isLocal())
-		{
-			finalFile << loginInfo[i].first.getAssistantDriver() << loginInfo[i].first.getSpareTires();
-		}
-
-		finalFile << "\n";
-	}
+	saveLoginInfo(loginInfo);
 }

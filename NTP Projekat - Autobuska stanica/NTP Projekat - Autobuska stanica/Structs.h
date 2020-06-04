@@ -62,7 +62,7 @@ public:
 	void setAssistantDriver(const std::string assistantDriver) { this->assistantDriver = assistantDriver; }
 	void setSpareTires(int spareTires) { this->spareTires = spareTires; }
 
-	bool isLocal()
+	bool isLocal() override
 	{
 		return false;
 	}

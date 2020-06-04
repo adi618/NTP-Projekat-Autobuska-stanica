@@ -28,7 +28,7 @@ void printTicket(Ticket& tic)
 	ticketFile.close();
 }
 
-void buyTicket(std::vector <std::pair<LocalBus, Driver>>& vec)
+void buyTicket(std::vector <std::pair<LocalBus*, Driver*>>& vec)
 {
 	Ticket tempTicket;
 	std::cout << "\n\n\tUnesite lokaciju na kojoj se nalazite: ";
@@ -38,7 +38,7 @@ void buyTicket(std::vector <std::pair<LocalBus, Driver>>& vec)
 
 	for (std::size_t i = 0; i < vec.size(); i++)
 	{
-		if (tempTicket.currentLocation == vec[i].first.getLocation() && vec[i].first.getTakenSeats() < vec[i].first.getTotalSeats())
+		if (tempTicket.currentLocation == vec[i].first->getLocation() && vec[i].first->getTakenSeats() < vec[i].first->getTotalSeats())
 		{
 			locationExists = true;
 			tempTicket.busIndex = i;
@@ -54,12 +54,12 @@ void buyTicket(std::vector <std::pair<LocalBus, Driver>>& vec)
 		bool printIt;
 		std::cout << "\n\n\tUnesite lokaciju koju zelite posjetiti: ";
 		std::cin >> tempTicket.wantsToVisit;
-		vec[tempTicket.busIndex].first.setTakenSeats(vec[tempTicket.busIndex].first.getTakenSeats() + 1);
+		vec[tempTicket.busIndex].first->setTakenSeats(vec[tempTicket.busIndex].first->getTakenSeats() + 1);
 		std::cout << "\tUnesite Vase ime: ";
 		std::cin >> tempTicket.name;
 		std::cout << "\tUnesite Vase prezime: ";
 		std::cin >> tempTicket.lastname;
-		tempTicket.seatNumber = vec[tempTicket.busIndex].first.getTakenSeats();
+		tempTicket.seatNumber = vec[tempTicket.busIndex].first->getTakenSeats();
 
 		std::cout << "\n\n\tVasa karta bi izgledala ovako:";
 		std::cout << "\n\t================================================="
@@ -81,7 +81,7 @@ void buyTicket(std::vector <std::pair<LocalBus, Driver>>& vec)
 	}
 }
 
-void printBussesOnCurrentLocation(std::vector <std::pair<LocalBus, Driver>>& vec)
+void printBussesOnCurrentLocation(std::vector <std::pair<LocalBus*, Driver*>>& vec)
 {
 	std::string currentLocation;
 	std::cout << "\n\n\tUnesite lokaciju na kojoj se nalazite: ";
@@ -91,11 +91,11 @@ void printBussesOnCurrentLocation(std::vector <std::pair<LocalBus, Driver>>& vec
 
 	for (std::size_t i = 0; i < vec.size(); i++)
 	{
-		if (currentLocation == vec[i].first.getLocation())
+		if (currentLocation == vec[i].first->getLocation())
 		{
 			locationExists = true;
-			std::cout << "\n\n\tNa Vasoj lokaciji se nalazi autobus sa ID brojem: " << vec[i].first.getID()
-				<< "\n\tOn posjeduje ukupno: " << vec[i].first.getTotalSeats() << " od cega je " << vec[i].first.getTakenSeats() << " zauzeto.";
+			std::cout << "\n\n\tNa Vasoj lokaciji se nalazi autobus sa ID brojem: " << vec[i].first->getID()
+				<< "\n\tOn posjeduje ukupno: " << vec[i].first->getTotalSeats() << " od cega je " << vec[i].first->getTakenSeats() << " zauzeto.";
 		}
 	}
 
@@ -105,12 +105,13 @@ void printBussesOnCurrentLocation(std::vector <std::pair<LocalBus, Driver>>& vec
 	}
 }
 
-void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec);
+void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus*, Driver*>>& vec);
+
+void saveLoginInfo(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo);
 
 void passenger()
 {
-	std::vector <std::pair<LocalBus, Driver>> loginInfo;
-	std::pair<LocalBus, Driver> driverInfo;
+	std::vector <std::pair<LocalBus*, Driver*>> loginInfo;
 
 	std::ifstream infoFile("info.txt");
 
@@ -156,27 +157,5 @@ void passenger()
 		system("pause");
 	}
 
-	std::ofstream finalFile("info.txt");
-	for (std::size_t i = 0; i < loginInfo.size(); i++)
-	{
-		if (loginInfo[i].first.isLocal())
-		{
-			finalFile << 0 << " ";
-		}
-		else
-		{
-			finalFile << 1 << " ";
-		}
-
-		finalFile << loginInfo[i].first.getID() << " " << loginInfo[i].first.getFuelPer100KM() << " " << loginInfo[i].first.getFuelPercentage()
-			<< " " << loginInfo[i].first.getTotalSeats() << " " << loginInfo[i].first.getTakenSeats() << " " << loginInfo[i].first.getLocation()
-			<< " " << loginInfo[i].second.name << " " << loginInfo[i].second.lastname << " " << loginInfo[i].second.encryptedPassword;
-
-		if (!loginInfo[i].first.isLocal())
-		{
-			finalFile << loginInfo[i].first.getAssistantDriver() << loginInfo[i].first.getSpareTires();
-		}
-
-		finalFile << "\n";
-	}
+	saveLoginInfo(loginInfo);
 }

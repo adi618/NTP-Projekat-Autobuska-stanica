@@ -45,7 +45,7 @@ int main()
 		else if (option == 10)
 		{
 			std::cout << "\n\n\t:(\n\n\n";
-			return 0;
+			break;
 		}
 		else
 		{

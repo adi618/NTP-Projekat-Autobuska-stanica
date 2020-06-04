@@ -1,12 +1,12 @@
 
 	=================================================
 
-	Ime i prezime putnika: ljela ljela
+	Ime i prezime putnika: adi zubic
 
 	Polazna lokacija: Zenica
 
-	Odrediste: Visoko
+	Odrediste: Kakanj
 
-	Sjediste broj: 22
+	Sjediste broj: 23
 
 	=================================================

@@ -19,7 +19,7 @@ struct Info
 
 void pause();
 
-void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec)
+void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus*, Driver*>>& vec)
 {
 	bool longDistance;
 
@@ -59,14 +59,15 @@ void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& ve
 			file >> assistantDriver;
 			file >> spareTires;
 
-			LongDistanceBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
-			Driver driver(name, lastname, password);
+			LongDistanceBus* bus = new LongDistanceBus
+			(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
+			Driver* driver = new Driver(name, lastname, password);
 			vec.push_back(std::make_pair(bus, driver));
 		}
 		else
 		{
-			LocalBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
-			Driver driver(name, lastname, password);
+			LocalBus* bus = new LocalBus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
+			Driver* driver = new Driver(name, lastname, password);
 			vec.push_back(std::make_pair(bus, driver));
 		}
 	}
@@ -99,13 +100,13 @@ void loadMap(std::ifstream& file, std::map <std::string, std::map <std::string, 
 }
 
 std::pair <bool, int> loginConfirmation
-(std::string name, std::string lastname, unsigned long long password, const std::vector <std::pair<LocalBus, Driver>>& loginInfo)
+(std::string name, std::string lastname, unsigned long long password, const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo)
 {
 	for (int i = 0; i < loginInfo.size(); i++)
 	{
-		if (name == loginInfo[i].second.name and
-			lastname == loginInfo[i].second.lastname and
-			password == loginInfo[i].second.encryptedPassword)
+		if (name == loginInfo[i].second->name and
+			lastname == loginInfo[i].second->lastname and
+			password == loginInfo[i].second->encryptedPassword)
 		{
 			return std::make_pair(true, i);
 		}
@@ -113,14 +114,14 @@ std::pair <bool, int> loginConfirmation
 	return std::make_pair(false, -1);
 }
 
-std::ostream& operator<<(std::ostream& stream, std::pair <LocalBus, Driver>& driver)
+std::ostream& operator<<(std::ostream& stream, std::pair <LocalBus*, Driver*>& driver)
 {
 
-	stream << "\n\tPostotak goriva: " << driver.first.getFuelPercentage();
-	stream << "\n\tPotrosnja po 100 kilometara: " << driver.first.getFuelPer100KM();
-	stream << "\n\tBroj zauzetih sjedista: " << driver.first.getTakenSeats();
-	stream << "\n\tBroj ukupnih sjedista: " << driver.first.getTotalSeats();
-	stream << "\n\tTrenutna lokacija: " << driver.first.getLocation();
+	stream << "\n\tPostotak goriva: " << driver.first->getFuelPercentage();
+	stream << "\n\tPotrosnja po 100 kilometara: " << driver.first->getFuelPer100KM();
+	stream << "\n\tBroj zauzetih sjedista: " << driver.first->getTakenSeats();
+	stream << "\n\tBroj ukupnih sjedista: " << driver.first->getTotalSeats();
+	stream << "\n\tTrenutna lokacija: " << driver.first->getLocation();
 
 	return stream;
 }
@@ -181,6 +182,7 @@ std::map <std::string, Info> dijkstra
 	return time;
 }
 
+void saveLoginInfo(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo);
 
 void driver()
 {
@@ -201,8 +203,8 @@ void driver()
 		return;
 	}
 
-	std::vector <std::pair<LocalBus, Driver>> loginInfo;
-	std::pair<LocalBus, Driver> driverInfo;
+	std::vector <std::pair<LocalBus*, Driver*>> loginInfo;
+	std::pair<LocalBus*, Driver*> driverInfo;
 	loadInfo(infoFile, loginInfo);
 	std::string name;
 	std::string lastname;
@@ -240,6 +242,7 @@ void driver()
 		}
 		else
 		{
+			std::cout << "\n\tPogresan unos!\n\tNemate preostalih pokusaja, nalog je trenutno blokiran zbog sigurnosti vlasnika.";
 			exit(0);
 		}
 	}
@@ -253,7 +256,7 @@ void driver()
 	}
 
 	std::map <std::string, Info> times;
-	times = dijkstra(driverInfo.first.getLocation(), map);
+	times = dijkstra(driverInfo.first->getLocation(), map);
 
 	int option = 0;
 	int index = 0;
@@ -268,35 +271,34 @@ void driver()
 			<< "\n\n\tOpcije:"
 			<< "\n\t\t1 - Odlazak na lokaciju"
 			<< "\n\t\t2 - Ispis vremenski najkraceg puta do svake ucitane lokacije"
+			<< "\n\t\t3 - Izbaci putnika"
 			<< "\n\t\t10 - Izlaz"
 			<< "\n\n\t\tOption: ";
 
 		std::cin >> option;
 
-		 if (option == 1)
+		if (option == 1)
 		{
 			std::cout << "\n\tNa koju lokaciju zelite otici? ";
 			std::cin >> temp;
 
-
-			bool set = false;
 			for (const std::pair <std::string, Info>& t : times)
 			{
 				if (temp == t.first and
 					t.second.time < std::numeric_limits <float>::max() and
-					driverInfo.first.getFuelPercentage() > t.second.fuel)
+					driverInfo.first->getFuelPercentage() > t.second.fuel)
 				{
-					driverInfo.first.setFuelPercentage(driverInfo.first.getFuelPercentage() - t.second.fuel);
-					driverInfo.first.setLocation(temp);
+					driverInfo.first->setFuelPercentage(driverInfo.first->getFuelPercentage() - t.second.fuel);
+					driverInfo.first->setLocation(temp);
 					loginInfo[driverIndex] = driverInfo;
-					times = dijkstra(driverInfo.first.getLocation(), map);
+					times = dijkstra(driverInfo.first->getLocation(), map);
 
-					set = true;
-					break;
+					goto exit;
 				}
 			}
-			if (!set)
-				std::cout << "\n\tNa unesenu lokaciju ne mozete otici";
+			std::cout << "\n\tNa unesenu lokaciju ne mozete otici";
+		exit:
+			std::cout << "\n";
 		}
 		else if (option == 2)
 		{
@@ -314,9 +316,21 @@ void driver()
 				}
 			}
 		}
+		else if (option == 3)
+		{
+			if (driverInfo.first->getTakenSeats() > 0)
+			{
+				driverInfo.first->setTakenSeats(driverInfo.first->getTakenSeats() - 1);
+				loginInfo[driverIndex] = driverInfo;
+			}
+			else
+			{
+				std::cout << "\n\tAutobus je prazan";
+			}
+		}
 		else if (option == 10)
 		{
-			return;
+			break;
 		}
 		else
 		{
@@ -325,4 +339,6 @@ void driver()
 		std::cout << "\n\n\t\t";
 		system("pause");
 	}
+
+	saveLoginInfo(loginInfo);
 }
