@@ -3,7 +3,7 @@
 
 #include "Structs.h"
 
-void passanger()
+void passenger()
 {
 	// ucitaj datume
 
@@ -17,10 +17,9 @@ void passanger()
 		std::cout << "\n\n\t    ";
 
 		std::cout << "\n\n\tDobrodosli!\n\tOdaberite opciju:"
-			<< "\n\t\t1 - Ispis redovnih voznji"
-			<< "\n\t\t2 - Kupovina nove karte"
-			<< "\n\t\t3 - Printanje kupljene karte"
-			<< "\n\t\t4 - "
+			<< "\n\t\t1 - Kupovina nove karte"
+			<< "\n\t\t2 - Printanje kupljene karte"
+			<< "\n\t\t10 - Izlaz"
 			<< "\n\n\t\tOdabir: ";
 
 		std::cin >> option;
@@ -33,15 +32,11 @@ void passanger()
 		{
 
 		}
-		else if (option == 3)
-		{
-
-		}
 		else if (option == 10)
 			return;
 		else
 		{
-			std::cout << "\n\t\tInvalid option!";
+			std::cout << "\n\t\tPogresan unos!";
 		}
 		std::cout << "\n\n\t\t";
 		system("pause");

@@ -46,7 +46,7 @@ int main()
 		}
 		else
 		{
-			std::cout << "\n\t\tInvalid option!";
+			std::cout << "\n\t\tPogresan unos!";
 		}
 		std::cout << "\n\n\t\t";
 		system("pause");

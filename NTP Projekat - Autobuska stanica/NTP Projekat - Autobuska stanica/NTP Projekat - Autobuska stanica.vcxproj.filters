@@ -24,7 +24,7 @@
     <ClCompile Include="Owner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Passanger.cpp">
+    <ClCompile Include="Passenger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

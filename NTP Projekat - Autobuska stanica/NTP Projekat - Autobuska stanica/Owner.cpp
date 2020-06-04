@@ -58,13 +58,13 @@ void loadDriver(std::vector <std::pair<LocalBus, Driver>>& vec)
 		std::cout << "\n\n\tUnesite broj rezervnih guma: ";
 		std::cin >> spareTires;
 
-		LongDistanceBus bus(ID, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
+		LongDistanceBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
 		Driver driver(name, lastname, password);
 		vec.push_back(std::make_pair(bus, driver));
 	}
 	else
 	{
-		LocalBus bus(ID, model, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
+		LocalBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
 		Driver driver(name, lastname, password);
 		vec.push_back(std::make_pair(bus, driver));
 	}
@@ -85,7 +85,7 @@ void deleteDriver(std::vector <std::pair<LocalBus, Driver>>& vec)
 			validID == true;
 			std::cout << "\n\n\tIme i prezime vozaca kojeg cete otpustiti: ";
 			std::cout << vec[i].second.name << " " << vec[i].second.lastname;
-			std::cout<< "\n\n\tUnesite ime vozaca kojeg cete zaposliti na njegovo mjesto: ";
+			std::cout << "\n\n\tUnesite ime vozaca kojeg cete zaposliti na njegovo mjesto: ";
 			std::cin >> newDriversName;
 			std::cout << "\n\n\tUnesite prezime vozaca kojeg cete zaposliti na njegovo mjesto: ";
 			std::cin >> newDriversLastname;
@@ -110,7 +110,6 @@ void printDrivers(std::vector <std::pair<LocalBus, Driver>>& vec)
 	{
 		std::cout << "\n\n\tIme vozaca: " << vec[i].second.name;
 		std::cout << "\n\n\tPrezime vozaca: " << vec[i].second.lastname;
-		std::cout << "\n\n\tID dodijeljenog autobusa: " << vec[i].first.getID();
 	}
 }
 
@@ -118,8 +117,6 @@ void printBusses(std::vector <std::pair<LocalBus, Driver>>& vec)
 {
 	for (std::size_t i = 0; i < vec.size(); i++)
 	{
-		std::cout << "\n\n\tID autobusa: " << vec[i].first.getID();
-		std::cout << "\n\n\tModel autobusa: " << vec[i].first.getModel();
 		std::cout << "\n\n\tPotrosnja goriva(l/100km): " << vec[i].first.getFuelPer100KM();
 		std::cout << "\n\n\tProcentualna kolicina goriva: " << vec[i].first.getFuelPercentage();
 		std::cout << "\n\n\tUkupan broj sjedista: " << vec[i].first.getTotalSeats();
@@ -128,30 +125,36 @@ void printBusses(std::vector <std::pair<LocalBus, Driver>>& vec)
 	}
 }
 
+unsigned long long encryptPassword(std::string password, unsigned i = 0);
+
 void owner()
 {
 	// login
 
-	long passwordOwnerInput;
-	long passwordOwnerTrue;
+	unsigned long long encryptedPassword;
+	unsigned long long passwordOwnerTrue;
 	int numberOfTries = 3;
 
-	std::ifstream ownerPassword("vlasnikSifra.txt");
+	std::ifstream ownerFile("vlasnikSifra.txt");
 
-	if (!ownerPassword.is_open())
+	if (!ownerFile.is_open())
 	{
 		std::cout << "\n\n\tNema registrovanog vlasnika!";
 		pause();
 		return;
 	}
-	ownerPassword >> passwordOwnerTrue;
+	ownerFile >> passwordOwnerTrue;
 
 	while (true)
 	{
 		std::cout << "\n\n\tMolimo unesite Vasu sifru: ";
-		std::cin >> passwordOwnerInput;
+		std::string* password = new std::string;
+		std::cin >> *password;
+		encryptedPassword = encryptPassword(*password);
 		numberOfTries--;
-		if (passwordOwnerInput == passwordOwnerTrue) // 
+		delete password;
+
+		if (encryptedPassword == passwordOwnerTrue) // 
 		{
 			std::cout << "\n\tPrijava uspjesna.\n\tDobro dosli!";
 			break;
@@ -166,7 +169,7 @@ void owner()
 			return;
 		}
 	}
-	ownerPassword.close();
+	ownerFile.close();
 
 	int option;
 	int index;
@@ -174,7 +177,6 @@ void owner()
 
 	while (true)
 	{
-
 		system("CLS");
 		std::cout << "\n\n\tDobrodosli!"
 			<< "\n\n\tOdaberite opciju:"
@@ -182,13 +184,14 @@ void owner()
 			<< "\n\t\t2 - Otpusti vozaca"
 			<< "\n\t\t3 - Ispisi sve informacije o vozacima"
 			<< "\n\t\t4 - Ispisi sve informacije o autobusima"
+			<< "\n\t\t10 - Izlaz"
 			<< "\n\n\t\tOdabir: ";
 
 		std::cin >> option;
 
 		if (option == 1)
 		{
-			
+
 		}
 		else if (option == 2)
 		{
