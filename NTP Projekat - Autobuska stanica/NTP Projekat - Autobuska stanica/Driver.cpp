@@ -9,7 +9,7 @@
 
 void pause();
 
-void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec)
+void loadInfoTxt(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec)
 {
 	bool longDistance;
 
@@ -206,7 +206,7 @@ void driver()
 
 	std::vector <std::pair<LocalBus, Driver>> loginInfo;
 	std::pair<LocalBus, Driver> driverInfo;
-	loadInfo(infoFile, loginInfo);
+	loadInfoTxt(infoFile, loginInfo);
 	std::string name;
 	std::string lastname;
 	std::string password;

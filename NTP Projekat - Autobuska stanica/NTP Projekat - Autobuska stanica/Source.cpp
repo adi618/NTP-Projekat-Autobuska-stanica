@@ -1,6 +1,8 @@
 #include <iostream>
 
 void driver();
+void owner();
+void passenger();
 
 void pause()
 {
@@ -8,6 +10,7 @@ void pause()
 	system("pause");
 }
 
+enum option { optDriver = 1, optPassenger, optOwner };
 
 int main()
 {
@@ -27,17 +30,17 @@ int main()
 
 		std::cin >> option;
 
-		if (option == 1)
+		if (option == optDriver)
 		{
 			driver();
 		}
-		else if (option == 2)
+		else if (option == optPassenger)
 		{
-
+			passenger();
 		}
-		else if (option == 3)
+		else if (option == optOwner)
 		{
-
+			owner();
 		}
 		else if (option == 10)
 		{

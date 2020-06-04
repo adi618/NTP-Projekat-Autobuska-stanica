@@ -1,0 +1,12 @@
+
+	=================================================
+
+	Ime i prezime putnika: Lejla Vardo
+
+	Polazna lokacija: Zenica
+
+	Odrediste: Kakanj
+
+	Sjediste broj: 21
+
+	=================================================
