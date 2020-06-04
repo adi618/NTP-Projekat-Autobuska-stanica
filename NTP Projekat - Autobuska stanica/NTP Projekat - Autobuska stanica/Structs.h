@@ -25,6 +25,8 @@ public:
 	int getTotalSeats() { return totalSeats; }
 	int getTakenSeats() { return takenSeats; }
 	std::string getLocation() { return location; }
+	virtual std::string getAssistantDriver() { return ""; }
+	virtual int getSpareTires() { return 0; }
 
 	// set methods:
 	void setID(int ID) { this->ID = ID; }
@@ -33,6 +35,11 @@ public:
 	void setTotalSeats(int totalSeats) { this->totalSeats = totalSeats; }
 	void setTakenSeats(int takenSeats) { this->takenSeats = takenSeats; }
 	void setLocation(const std::string location) { this->location = location; }
+
+	virtual bool isLocal()
+	{
+		return true;
+	}
 };
 
 class LongDistanceBus : public LocalBus
@@ -54,6 +61,11 @@ public:
 
 	void setAssistantDriver(const std::string assistantDriver) { this->assistantDriver = assistantDriver; }
 	void setSpareTires(int spareTires) { this->spareTires = spareTires; }
+
+	bool isLocal()
+	{
+		return false;
+	}
 };
 
 struct Driver

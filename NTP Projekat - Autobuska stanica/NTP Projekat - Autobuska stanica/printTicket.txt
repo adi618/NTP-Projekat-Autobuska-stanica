@@ -1,12 +1,12 @@
 
 	=================================================
 
-	Ime i prezime putnika: Lejla Vardo
+	Ime i prezime putnika: ljela ljela
 
 	Polazna lokacija: Zenica
 
-	Odrediste: Kakanj
+	Odrediste: Visoko
 
-	Sjediste broj: 21
+	Sjediste broj: 22
 
 	=================================================

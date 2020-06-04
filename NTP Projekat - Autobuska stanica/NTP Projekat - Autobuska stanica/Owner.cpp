@@ -6,6 +6,7 @@
 
 void pause();
 
+unsigned long long encryptPassword(std::string password, unsigned i = 0);
 void loadDriverKeyboard(std::vector <std::pair<LocalBus, Driver>>& vec)
 {
 	bool longDistance;
@@ -20,7 +21,7 @@ void loadDriverKeyboard(std::vector <std::pair<LocalBus, Driver>>& vec)
 	// for driver
 	std::string name;
 	std::string lastname;
-	unsigned long long password;
+	std::string password;
 
 	std::cout << "\n\tZa registrovanje para vozac-autobus unesite njihov ID: ";
 	std::cin >> ID;
@@ -55,13 +56,13 @@ void loadDriverKeyboard(std::vector <std::pair<LocalBus, Driver>>& vec)
 		std::cin >> spareTires;
 
 		LongDistanceBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
-		Driver driver(name, lastname, password);
+		Driver driver(name, lastname, encryptPassword(password));
 		vec.push_back(std::make_pair(bus, driver));
 	}
 	else
 	{
 		LocalBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
-		Driver driver(name, lastname, password);
+		Driver driver(name, lastname, encryptPassword(password));
 		vec.push_back(std::make_pair(bus, driver));
 	}
 }
@@ -124,59 +125,7 @@ void printBusses(std::vector <std::pair<LocalBus, Driver>>& vec)
 }
 
 void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus, Driver>>& vec);
-//{
-//	bool longDistance;
-//
-//	// temp values:
-//	// for bus
-//	int ID;
-//	float fuelPer100KM;
-//	float fuelPercentage;
-//	int totalSeats;
-//	int takenSeats;
-//	std::string location;
-//	// for driver
-//	std::string name;
-//	std::string lastname;
-//	unsigned long long password;
-//
-//	while (file >> longDistance)
-//	{
-//		file >> ID;
-//		file >> fuelPer100KM;
-//		file >> fuelPercentage;
-//		file >> totalSeats;
-//		file >> takenSeats;
-//		file >> location;
-//
-//		file >> name;
-//		file >> lastname;
-//		file >> password;
-//
-//		if (takenSeats > totalSeats)
-//			takenSeats = totalSeats;
-//
-//		if (longDistance)
-//		{
-//			std::string assistantDriver;
-//			int spareTires;
-//			file >> assistantDriver;
-//			file >> spareTires;
-//
-//			LongDistanceBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location, assistantDriver, spareTires);
-//			Driver driver(name, lastname, password);
-//			vec.push_back(std::make_pair(bus, driver));
-//		}
-//		else
-//		{
-//			LocalBus bus(ID, fuelPer100KM, fuelPercentage, totalSeats, takenSeats, location);
-//			Driver driver(name, lastname, password);
-//			vec.push_back(std::make_pair(bus, driver));
-//		}
-//	}
-//}
 
-//unsigned long long encryptPassword(std::string password, unsigned i = 0);
 
 void owner()
 {
@@ -213,14 +162,13 @@ void owner()
 	while (true)
 	{
 		std::cout << "\n\n\tMolimo unesite Vasu sifru: ";
-		std::cin >> passwordOwnerInput;
 		std::string* password = new std::string;
-		//std::cin >> *password;
-		//encryptedPassword = encryptPassword(*password);
+		std::cin >> *password;
+		encryptedPassword = encryptPassword(*password);
 		numberOfTries--;
-		//delete password;
+		delete password;
 
-		if (passwordOwnerInput == passwordOwnerTrue) // 
+		if (encryptedPassword == passwordOwnerTrue)
 		{
 			std::cout << "\n\tPrijava uspjesna.\n\tDobro dosli!";
 			pause();
@@ -271,7 +219,7 @@ void owner()
 		}
 		else if (option == 10)
 		{
-			return;
+			break;
 		}
 		else
 		{
@@ -285,17 +233,24 @@ void owner()
 	std::ofstream finalFile("info.txt");
 	for (std::size_t i = 0; i < loginInfo.size(); i++)
 	{
-		if (true)
+		if (loginInfo[i].first.isLocal())
 		{
-			finalFile << 0 << " " << loginInfo[i].first.getID() << " " << loginInfo[i].first.getFuelPer100KM() << " " << loginInfo[i].first.getFuelPercentage()
-				<< " " << loginInfo[i].first.getTotalSeats() << " " << loginInfo[i].first.getTakenSeats() << " " << loginInfo[i].second.name
-				<< " " << loginInfo[i].first.getLocation() << " " << loginInfo[i].second.lastname << " " << loginInfo[i].second.encryptedPassword << std::endl;
+			finalFile << 0 << " ";
 		}
 		else
 		{
-			finalFile << 1 << " " << loginInfo[i].first.getID() << " " << loginInfo[i].first.getFuelPer100KM() << " " << loginInfo[i].first.getFuelPercentage()
-				<< " " << loginInfo[i].first.getTotalSeats() << " " << loginInfo[i].first.getTakenSeats() << " " << loginInfo[i].second.name
-				<< " " << loginInfo[i].first.getLocation() << " " << loginInfo[i].second.lastname << " " << loginInfo[i].second.encryptedPassword << std::endl;
+			finalFile << 1 << " ";
 		}
+
+		finalFile << loginInfo[i].first.getID() << " " << loginInfo[i].first.getFuelPer100KM() << " " << loginInfo[i].first.getFuelPercentage()
+			<< " " << loginInfo[i].first.getTotalSeats() << " " << loginInfo[i].first.getTakenSeats() << " " << loginInfo[i].first.getLocation()
+			<< " " << loginInfo[i].second.name << " " << loginInfo[i].second.lastname<< " "<< loginInfo[i].second.encryptedPassword;
+
+		if (!loginInfo[i].first.isLocal())
+		{
+			finalFile << loginInfo[i].first.getAssistantDriver() << loginInfo[i].first.getSpareTires();
+		}
+
+		finalFile << "\n";
 	}
 }

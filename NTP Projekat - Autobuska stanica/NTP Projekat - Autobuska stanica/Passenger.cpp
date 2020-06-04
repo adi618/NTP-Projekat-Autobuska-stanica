@@ -146,7 +146,7 @@ void passenger()
 		}
 		else if (option == 10)
 		{
-			return;
+			break;
 		}
 		else
 		{
@@ -159,17 +159,24 @@ void passenger()
 	std::ofstream finalFile("info.txt");
 	for (std::size_t i = 0; i < loginInfo.size(); i++)
 	{
-		if (true)
+		if (loginInfo[i].first.isLocal())
 		{
-			finalFile << 0 << " " << loginInfo[i].first.getID() << " " << loginInfo[i].first.getFuelPer100KM() << " " << loginInfo[i].first.getFuelPercentage()
-				<< " " << loginInfo[i].first.getTotalSeats() << " " << loginInfo[i].first.getTakenSeats() << " " << loginInfo[i].second.name
-				<< " " << loginInfo[i].first.getLocation() << " " << loginInfo[i].second.lastname << " " << loginInfo[i].second.encryptedPassword << std::endl;
+			finalFile << 0 << " ";
 		}
 		else
 		{
-			finalFile << 1 << " " << loginInfo[i].first.getID() << " " << loginInfo[i].first.getFuelPer100KM() << " " << loginInfo[i].first.getFuelPercentage()
-				<< " " << loginInfo[i].first.getTotalSeats() << " " << loginInfo[i].first.getTakenSeats() << " " << loginInfo[i].second.name
-				<< " " << loginInfo[i].first.getLocation() << " " << loginInfo[i].second.lastname << " " << loginInfo[i].second.encryptedPassword << std::endl;
+			finalFile << 1 << " ";
 		}
+
+		finalFile << loginInfo[i].first.getID() << " " << loginInfo[i].first.getFuelPer100KM() << " " << loginInfo[i].first.getFuelPercentage()
+			<< " " << loginInfo[i].first.getTotalSeats() << " " << loginInfo[i].first.getTakenSeats() << " " << loginInfo[i].first.getLocation()
+			<< " " << loginInfo[i].second.name << " " << loginInfo[i].second.lastname << " " << loginInfo[i].second.encryptedPassword;
+
+		if (!loginInfo[i].first.isLocal())
+		{
+			finalFile << loginInfo[i].first.getAssistantDriver() << loginInfo[i].first.getSpareTires();
+		}
+
+		finalFile << "\n";
 	}
 }

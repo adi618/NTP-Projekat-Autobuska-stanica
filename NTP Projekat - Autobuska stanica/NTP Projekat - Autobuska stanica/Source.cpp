@@ -19,7 +19,7 @@ int main()
 	while (true)
 	{
 		system("cls");
-		std::cout << "\n\tDobro dosli u autobusku stanicu xy!";
+		std::cout << "\n\tDobro dosli u autobusku stanicu!";
 
 		std::cout << "\n\n\tDa li ste:"
 			<< "\n\t\t1 - Vozac?"
@@ -44,7 +44,7 @@ int main()
 		}
 		else if (option == 10)
 		{
-			std::cout << "\n\n\t       \n\n\n";
+			std::cout << "\n\n\t:(\n\n\n";
 			return 0;
 		}
 		else
