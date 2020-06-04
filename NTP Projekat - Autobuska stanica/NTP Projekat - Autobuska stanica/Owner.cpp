@@ -121,6 +121,12 @@ void printBusses(std::vector <std::pair<LocalBus, Driver>>& vec)
 		std::cout << "\n\tUkupan broj sjedista: " << vec[i].first.getTotalSeats();
 		std::cout << "\n\tUkupan broj zauzetih sjedista: " << vec[i].first.getTakenSeats();
 		std::cout << "\n\tLokacija autobusa: " << vec[i].first.getLocation();
+
+		if (!vec[i].first.isLocal())
+		{
+			std::cout << "\n\tIme pomocnog vozaca: " << vec[i].first.getAssistantDriver();
+			std::cout << "\n\tBroj rezervnih guma: " << vec[i].first.getSpareTires();
+		}
 	}
 }
 
