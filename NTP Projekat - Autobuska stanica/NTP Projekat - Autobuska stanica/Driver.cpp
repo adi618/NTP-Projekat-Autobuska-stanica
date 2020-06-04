@@ -12,6 +12,7 @@ struct Info
 	float fuel;
 
 	Info() : time(0), fuel(0) {};
+
 	Info(float time, float fuel) : time(time), fuel(fuel) {};
 };
 
@@ -276,6 +277,7 @@ void driver()
 		{
 			std::cout << "\n\tNa koju lokaciju zelite otici? ";
 			std::cin >> temp;
+
 
 			bool set = false;
 			for (const std::pair <std::string, Info>& t : times)
