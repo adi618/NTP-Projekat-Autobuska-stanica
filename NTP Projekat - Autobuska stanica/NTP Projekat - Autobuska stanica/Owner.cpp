@@ -147,11 +147,11 @@ void saveLoginInfo(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo)
 
 		finalFile << loginInfo[i].first->getID() << " " << loginInfo[i].first->getFuelPer100KM() << " " << loginInfo[i].first->getFuelPercentage()
 			<< " " << loginInfo[i].first->getTotalSeats() << " " << loginInfo[i].first->getTakenSeats() << " " << loginInfo[i].first->getLocation()
-			<< " " << loginInfo[i].second->name << " " << loginInfo[i].second->lastname << " " << loginInfo[i].second->encryptedPassword;
+			<< " " << loginInfo[i].second->name << " " << loginInfo[i].second->lastname << " " << loginInfo[i].second->encryptedPassword << " ";
 
 		if (!loginInfo[i].first->isLocal())
 		{
-			finalFile << loginInfo[i].first->getAssistantDriver() << loginInfo[i].first->getSpareTires();
+			finalFile << loginInfo[i].first->getAssistantDriver() << " " << loginInfo[i].first->getSpareTires();
 		}
 
 		finalFile << "\n";
@@ -160,6 +160,8 @@ void saveLoginInfo(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo)
 }
 
 void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus*, Driver*>>& vec);
+
+void deleteMemory(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo);
 
 void owner()
 {
@@ -265,4 +267,6 @@ void owner()
 	}
 
 	saveLoginInfo(loginInfo);
+
+	deleteMemory(loginInfo);
 }

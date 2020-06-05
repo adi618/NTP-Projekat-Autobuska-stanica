@@ -184,6 +184,15 @@ std::map <std::string, Info> dijkstra
 
 void saveLoginInfo(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo);
 
+void deleteMemory(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo)
+{
+	for (const std::pair<LocalBus*, Driver*>& info : loginInfo)
+	{
+		delete info.first;
+		delete info.second;
+	}
+}
+
 void driver()
 {
 	std::ifstream infoFile("info.txt");
@@ -341,4 +350,6 @@ void driver()
 	}
 
 	saveLoginInfo(loginInfo);
+
+	deleteMemory(loginInfo);
 }

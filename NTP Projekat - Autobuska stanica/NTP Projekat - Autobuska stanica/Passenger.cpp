@@ -109,6 +109,8 @@ void loadInfo(std::ifstream& file, std::vector <std::pair<LocalBus*, Driver*>>& 
 
 void saveLoginInfo(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo);
 
+void deleteMemory(const std::vector <std::pair<LocalBus*, Driver*>>& loginInfo);
+
 void passenger()
 {
 	std::vector <std::pair<LocalBus*, Driver*>> loginInfo;
@@ -158,4 +160,6 @@ void passenger()
 	}
 
 	saveLoginInfo(loginInfo);
+
+	deleteMemory(loginInfo);
 }
