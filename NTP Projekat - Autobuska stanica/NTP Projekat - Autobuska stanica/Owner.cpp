@@ -199,6 +199,7 @@ void owner()
 		std::cin >> *password;
 		encryptedPassword = encryptPassword(*password);
 		numberOfTries--;
+		*password = "";
 		delete password;
 
 		if (encryptedPassword == passwordOwnerTrue)
