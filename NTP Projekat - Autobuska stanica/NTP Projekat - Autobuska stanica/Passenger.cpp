@@ -95,7 +95,7 @@ void printBussesOnCurrentLocation(std::vector <std::pair<LocalBus*, Driver*>>& v
 		{
 			locationExists = true;
 			std::cout << "\n\n\tNa Vasoj lokaciji se nalazi autobus sa ID brojem: " << vec[i].first->getID()
-				<< "\n\tOn posjeduje ukupno: " << vec[i].first->getTotalSeats() << " od cega je " << vec[i].first->getTakenSeats() << " zauzeto.";
+				<< "\n\tOn posjeduje ukupno: " << vec[i].first->getTotalSeats() << " sjedista od cega je " << vec[i].first->getTakenSeats() << " zauzeto.";
 		}
 	}
 
