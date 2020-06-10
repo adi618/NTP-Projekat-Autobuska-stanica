@@ -86,9 +86,9 @@ void loadMap(std::ifstream& file, std::map <std::string, std::map <std::string, 
 		file >> time;
 		file >> fuel;
 
-		if (time > 0 and fuel > 0)
+		if (time > 0 or fuel > 0)
 		{
-			if (time < adjMatrix[location1][location2].time)
+			if (time > adjMatrix[location1][location2].time)
 			{
 				adjMatrix[location1][location2] = Info(time, fuel);
 				if (undirected)

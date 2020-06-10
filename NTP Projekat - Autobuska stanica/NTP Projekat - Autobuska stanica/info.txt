@@ -1,1 +1,2 @@
-0 1234 10 20.7 30 19 Visoko adi z 391710815 
+0 1234 10 16 30 20 Zenica adi z 391710815 
+1 231 123 23 321 2 Visoko lejla vardo 218342450 ime 23
