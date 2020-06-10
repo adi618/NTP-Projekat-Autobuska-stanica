@@ -5,6 +5,7 @@
 
 #include "Structs.h"
 
+float constexpr MAX = std::numeric_limits <float>::max();
 
 struct Info
 {
@@ -137,7 +138,6 @@ unsigned long long encryptPassword(std::string password, unsigned i = 0)
 std::map <std::string, Info> dijkstra
 (std::string source, std::map <std::string, std::map <std::string, Info>>& adjMatrix)
 {
-	float MAX = std::numeric_limits <float>::max();
 	std::map <std::string, Info> time;
 	std::map <std::string, bool> visited;
 	for (const std::pair<std::string, std::map <std::string, Info>>& it : adjMatrix)
@@ -266,6 +266,8 @@ void driver()
 
 	std::map <std::string, Info> times;
 	times = dijkstra(driverInfo.first->getLocation(), map);
+	infoFile.close();
+	mapFile.close();
 
 	int option = 0;
 	int index = 0;
@@ -294,7 +296,7 @@ void driver()
 			for (const std::pair <std::string, Info>& t : times)
 			{
 				if (temp == t.first and
-					t.second.time < std::numeric_limits <float>::max() and
+					t.second.time < MAX and
 					driverInfo.first->getFuelPercentage() > t.second.fuel)
 				{
 					driverInfo.first->setFuelPercentage(driverInfo.first->getFuelPercentage() - t.second.fuel);
@@ -314,7 +316,7 @@ void driver()
 			for (const std::pair <std::string, Info>& t : times)
 			{
 				std::cout << "\n\t\t" << t.first << ": ";
-				if (t.second.time < std::numeric_limits <float>::max())
+				if (t.second.time < MAX)
 				{
 					std::cout << t.second.time << " minuta"
 						<< "; " << t.second.fuel << "% goriva";
