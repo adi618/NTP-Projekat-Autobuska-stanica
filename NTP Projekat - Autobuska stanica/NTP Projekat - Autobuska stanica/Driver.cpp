@@ -168,7 +168,7 @@ std::map <std::string, Info> dijkstra
 
 		for (const std::pair<std::string, std::map <std::string, Info>>& v : adjMatrix)
 		{
-			if (!visited[v.first] and
+			if (visited[v.first] == false and
 				adjMatrix[u][v.first].time > 0 and
 				time[u].time != MAX and
 				time[u].time + adjMatrix[u][v.first].time < time[v.first].time)
